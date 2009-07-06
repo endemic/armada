@@ -16,8 +16,6 @@ package
 	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-		
-	[SWF(width="200", height="400", frameRate="30", backgroundColor="0x000000")]
 	
 	public class GameState extends Sprite
 	{
@@ -120,8 +118,8 @@ package
 			for(i = 0; i < _keys.length; i++) _keys[i] = 0;
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void { if(_keys[e.keyCode] == 0) _keys[e.keyCode] = 1; } );
-		    stage.addEventListener(KeyboardEvent.KEY_UP,   function(e:KeyboardEvent):void { _keys[e.keyCode] = 0; } );
+			Game.main.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void { if(_keys[e.keyCode] == 0) _keys[e.keyCode] = 1; } );
+		    Game.main.stage.addEventListener(KeyboardEvent.KEY_UP,   function(e:KeyboardEvent):void { _keys[e.keyCode] = 0; } );
 		}
 		
 		private function onEnterFrame(e:Event):void
@@ -257,15 +255,15 @@ package
 			// Update enemy bullet position
 			for(i = 0; i < enemyBullets.length; i++)
 			{
-				// Check for collision between enemy bullets and player
-				if(enemyBullets[i].collidesWith(player))
-					resetGame();
-					
 				if(!enemyBullets[i].update())
 				{
 					enemyBullets.splice(i, 1);
 					i--;
 				}
+				
+				// Check for collision between enemy bullets and player
+				if(enemyBullets[i].collidesWith(player))
+					resetGame();
 			}
 			
 			// Update star position
@@ -316,6 +314,13 @@ package
 		{
 			for(var i:int = 0; i < _keys.length; i++)
 				if(_keys[i] > 0) _keys[i] = 2;
+		}
+		
+		public function destroy():void
+		{
+			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			Game.main.stage.removeEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void { if(_keys[e.keyCode] == 0) _keys[e.keyCode] = 1; } );
+		   	Game.main.stage.removeEventListener(KeyboardEvent.KEY_UP,   function(e:KeyboardEvent):void { _keys[e.keyCode] = 0; } );
 		}
 	}
 }
