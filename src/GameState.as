@@ -255,15 +255,15 @@ package
 			// Update enemy bullet position
 			for(i = 0; i < enemyBullets.length; i++)
 			{
+				// Check for collision between enemy bullets and player
+				if(enemyBullets[i].collidesWith(player))
+					resetGame();
+					
 				if(!enemyBullets[i].update())
 				{
 					enemyBullets.splice(i, 1);
 					i--;
 				}
-				
-				// Check for collision between enemy bullets and player
-				if(enemyBullets[i].collidesWith(player))
-					resetGame();
 			}
 			
 			// Update star position
