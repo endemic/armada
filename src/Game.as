@@ -26,7 +26,7 @@ package
 		{
 			// Entry point
 			main = this;
-			switchState(GameState);
+			switchState(MenuState);
 		}
 		
 		static public function switchState(state:Class):void

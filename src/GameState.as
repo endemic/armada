@@ -17,6 +17,8 @@ package
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
+	import flash.media.Sound;
+	
 	public class GameState extends Sprite
 	{
 		public static var WIDTH:int = 200;
@@ -42,12 +44,17 @@ package
 		private var starShape:Shape = new Shape;
 		private var particleShape:Shape = new Shape;
 		
-		[Embed(source="sounds/enemyshoot.mp3")] private var EnemyShootSound:Class;
+		[Embed(source="../sounds/enemyshoot.mp3")] private var EnemyShootSound:Class;
 		private var enemyShootSound:Sound = new EnemyShootSound() as Sound;
-		[Embed(source="sounds/die.mp3")] private var DieSound:Class;
-		private var dieSound:Sound = new DieSound() as Sound;
+		[Embed(source="../sounds/enemydie.mp3")] private var EnemyDieSound:Class;
+		private var enemyDieSound:Sound = new EnemyDieSound() as Sound;
+		[Embed(source="../sounds/die.mp3")] private var PlayerDieSound:Class;
+		private var playerDieSound:Sound = new PlayerDieSound() as Sound;
+		[Embed(source="../sounds/pew2.mp3")] private var PlayerShootSound:Class;
+		private var playerShootSound:Sound = new PlayerShootSound() as Sound;
 		
 		private var spacePressed:Boolean;
+		private var shootDelay:int = 0;
 		
 		// Scoring, display, etc.
 		private var enemiesKilled:int = 0;
@@ -198,8 +205,13 @@ package
 	        if (_keys[0x28] || _keys[0x53]) player.position.y +=  1;
 			
 			// Shoot
-			if(_keys[32] == 1)
-				bullets.push(new Actor(player.position.x, player.position.y, bulletShape, 0, -5));
+			if (_keys[32])
+				if (shootDelay++ > 4) 
+				{
+					shootDelay = 0;
+					playerShootSound.play();
+					bullets.push(new Actor(player.position.x, player.position.y, bulletShape, 0, -5));
+				}
 			
 			// Update enemy position
 			for(i = 0; i < enemies.length; i++)
@@ -238,6 +250,8 @@ package
 				{
 					if(enemies[j].collidesWith(bullets[i]))
 					{
+						enemyDieSound.play();
+						
 						// Create particle explosion
 						for(var k:int = 0; k < MAX_PARTICLES; k++)
 						{	
@@ -266,7 +280,7 @@ package
 				// Check for collision between enemy bullets and player
 				if (enemyBullets[i].collidesWith(player))
 				{
-					dieSound.play();
+					playerDieSound.play();
 					resetGame();
 					break;
 				}
