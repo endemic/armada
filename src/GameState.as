@@ -42,6 +42,11 @@ package
 		private var starShape:Shape = new Shape;
 		private var particleShape:Shape = new Shape;
 		
+		[Embed(source="sounds/enemyshoot.mp3")] private var EnemyShootSound:Class;
+		private var enemyShootSound:Sound = new EnemyShootSound() as Sound;
+		[Embed(source="sounds/die.mp3")] private var DieSound:Class;
+		private var dieSound:Sound = new DieSound() as Sound;
+		
 		private var spacePressed:Boolean;
 		
 		// Scoring, display, etc.
@@ -207,8 +212,11 @@ package
 				enemies[i].update();
 				
 				// Shoot every so often - between 1 - 3 seconds
-				if(enemies[i].ticksSinceSpawned % (60 * int(Math.random() * 3 + 1)) == 0)
+				if (enemies[i].ticksSinceSpawned % (60 * int(Math.random() * 3 + 1)) == 0)
+				{
 					enemyBullets.push(new Actor(enemies[i].position.x + Math.cos(enemies[i].rotation) - enemies[i].width / 2, enemies[i].position.y + Math.sin(enemies[i].rotation) - enemies[i].height / 2, enemyBulletShape, Math.cos(enemies[i].rotation) * 2, Math.sin(enemies[i].rotation) * 2));
+					enemyShootSound.play();
+				}
 			}
 			
 			// Spawn a new enemy every 5 seconds
@@ -256,8 +264,12 @@ package
 			for(i = 0; i < enemyBullets.length; i++)
 			{
 				// Check for collision between enemy bullets and player
-				if(enemyBullets[i].collidesWith(player))
+				if (enemyBullets[i].collidesWith(player))
+				{
+					dieSound.play();
 					resetGame();
+					break;
+				}
 					
 				if(!enemyBullets[i].update())
 				{
