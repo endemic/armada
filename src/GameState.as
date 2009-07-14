@@ -31,6 +31,7 @@ package
 		private var _ticks:int = 0;
 		
 		private var player:Actor;
+		//private var powerUp:Actor;
 		private var enemies:Array = new Array;
 		private var enemyBullets:Array = new Array;
 		private var bullets:Array = new Array;
@@ -124,7 +125,7 @@ package
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
 			
 			// Init player
-			player = new Actor(100, 300, shipShape);
+			player = new Actor(100, 300, shipShape, 1, 1);
 			
 			// Init keyboard values
 			for(i = 0; i < _keys.length; i++) _keys[i] = 0;
@@ -199,14 +200,14 @@ package
 			var i:int = 0, j:int = 0;
 			
 			// Update player position
-			if (_keys[0x25] || _keys[0x41]) player.position.x += -1; 
-	        if (_keys[0x26] || _keys[0x57]) player.position.y += -1; 
-	        if (_keys[0x27] || _keys[0x44]) player.position.x +=  1; 
-	        if (_keys[0x28] || _keys[0x53]) player.position.y +=  1;
+			if (_keys[0x25] || _keys[0x41]) player.position.x -= player.velocity.x; 
+	        if (_keys[0x26] || _keys[0x57]) player.position.y -= player.velocity.y; 
+	        if (_keys[0x27] || _keys[0x44]) player.position.x += player.velocity.x; 
+	        if (_keys[0x28] || _keys[0x53]) player.position.y += player.velocity.y;
 			
 			// Shoot
 			if (_keys[32])
-				if (shootDelay++ > 4) 
+				if (shootDelay++ > 8 / player.velocity.x) 
 				{
 					shootDelay = 0;
 					playerShootSound.play();
@@ -309,6 +310,13 @@ package
 			
 			// Makes values in key array "2" if button is held down
 			updateKeys();
+			
+			// Increase player movement/shooting speed for every 100 enemies killed
+			if (enemiesKilled % 100 == 0 && enemiesKilled > 0)
+			{
+				player.velocity.x += 0.25;
+				player.velocity.y += 0.25;
+			}
 		}
 		
 		private function resetGame():void
