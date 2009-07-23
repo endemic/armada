@@ -61,6 +61,7 @@ package
 		private var enemiesKilled:int = 0;
 		private var enemiesKilledDisplay:TextField = new TextField;
 		private var timerDisplay:TextField = new TextField;
+		private var gameOver:Boolean = false;
 		
 		public function GameState():void
 		{
@@ -149,7 +150,8 @@ package
 			_canvas.colorTransform(cr, ct);
 			
 			// Draw player
-			_canvas.copyPixels(player.bitmap, player.bitmap.rect, new Point(player.position.x - (player.width / 2), player.position.y - (player.height / 2)));
+			if(!gameOver)
+				_canvas.copyPixels(player.bitmap, player.bitmap.rect, new Point(player.position.x - (player.width / 2), player.position.y - (player.height / 2)));
 			//_canvas.draw(player.bitmap, matrix, null, null, null, true);
 			
 			// Draw enemies
@@ -206,7 +208,7 @@ package
 	        if (_keys[0x28] || _keys[0x53]) player.position.y += player.velocity.y;
 			
 			// Shoot
-			if (_keys[32])
+			if (_keys[32] && !gameOver)
 				if (shootDelay++ > 8 / player.velocity.x) 
 				{
 					shootDelay = 0;
@@ -233,7 +235,7 @@ package
 			}
 			
 			// Spawn a new enemy every 5 seconds
-			if(_ticks % 300 == 0)
+			if(_ticks % 300 == 0 && !gameOver)
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
 			
 			// Update bullet position
@@ -342,6 +344,15 @@ package
 			// Reset player
 			player.position.x = 100;
 			player.position.y = 300;
+		}
+		
+		private function gameOver():void
+		{
+			gameOver = true;
+			
+			resetGame();
+			
+			// Display buttons, etc. here to start the game over
 		}
 		
 		private function updateKeys():void
