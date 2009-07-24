@@ -65,7 +65,7 @@ package
 			playButton.selectable = false;
 			addChild(playButton);
 			
-			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); stage.focus = Game.currentState; });
+			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}
 		

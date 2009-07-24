@@ -31,7 +31,6 @@ package
 		private var _ticks:int = 0;
 		
 		private var player:Actor;
-		//private var powerUp:Actor;
 		private var enemies:Array = new Array;
 		private var enemyBullets:Array = new Array;
 		private var bullets:Array = new Array;
@@ -58,6 +57,8 @@ package
 		private var shootDelay:int = 0;
 		
 		// Scoring, display, etc.
+		private var shotsFired:int = 0;
+		private var enemiesSpawned:int = 0;
 		private var enemiesKilled:int = 0;
 		private var enemiesKilledDisplay:TextField = new TextField;
 		private var timerDisplay:TextField = new TextField;
@@ -124,6 +125,7 @@ package
 			// Add some random enemies
 			for(i = 0; i < 5; i++)
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
+			enemiesSpawned = 5;
 			
 			// Init player
 			player = new Actor(100, 300, shipShape, 1, 1);
@@ -214,6 +216,7 @@ package
 					shootDelay = 0;
 					playerShootSound.play();
 					bullets.push(new Actor(player.position.x, player.position.y, bulletShape, 0, -5));
+					shotsFired++;
 				}
 			
 			// Update enemy position
@@ -235,14 +238,18 @@ package
 			}
 			
 			// Spawn a new enemy every 5 seconds
-			if(_ticks % 300 == 0 && !gameOver)
+			if(_ticks % 300 == 0 && !gameOver && enemiesSpawned < 1000)
+			{
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
+				enemiesSpawned++;
+			}
 			
 			// Update bullet position
 			for(i = 0; i < bullets.length; i++)
 			{
 				if(!bullets[i].update())
 				{
+					// If goes off edge of screen, remove it
 					bullets.splice(i, 1);
 					i--;
 					continue;
@@ -263,7 +270,15 @@ package
 						}
 						
 						// Destroy enemy, but instantly create a new one to take its place
-						enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShape));
+						if(enemiesSpawned < 1000)
+						{
+							enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShape));
+							enemiesSpawned++;
+						}
+						else
+						{
+							enemies.splice(j, 1);
+						}
 						
 						// Increment counter/display
 						enemiesKilled++;
@@ -284,7 +299,8 @@ package
 				if (enemyBullets[i].collidesWith(player))
 				{
 					playerDieSound.play();
-					resetGame();
+					//resetGame();
+					endGame();
 					break;
 				}
 					
@@ -313,9 +329,13 @@ package
 			// Makes values in key array "2" if button is held down
 			updateKeys();
 			
-			// Increase player movement/shooting speed for every enemy killed			
+			// Increase player movement/shooting speed for every enemy killed - this may be too fast		
 			player.velocity.x = 1 + 0.0025 * enemiesKilled;
 			player.velocity.y = 1 + 0.0025 * enemiesKilled;
+			
+			// Implement "win" condition
+			if(enemiesKilled == 1000)
+				winGame();
 		}
 		
 		private function resetGame():void
@@ -334,6 +354,9 @@ package
 			enemiesKilled = 0;
 			enemiesKilledDisplay.text = enemiesKilled + "/1000";
 			
+			// Reset game ticks
+			_ticks = 0;
+			
 			// Spawn some new enemies
 			for(var i:int = 0; i < 5; i++)
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
@@ -347,9 +370,54 @@ package
 		{
 			gameOver = true;
 			
-			resetGame();
+			// Remove all bullets, enemies
+			while(bullets.length > 0) bullets.splice(0, 1);
+			while(enemyBullets.length > 0) enemyBullets.splice(0, 1);
+			while(enemies.length > 0) enemies.splice(0, 1);
 			
-			// Display buttons, etc. here to start the game over
+			// Make the screen flash white
+			var cr:Rectangle = new Rectangle(0, 0, _canvas.width, _canvas.height);
+			var ct:ColorTransform = new ColorTransform(1, 1, 1, 1, 255, 255, 255);
+			_canvas.colorTransform(cr, ct);
+			
+			// Figure out some stats
+			var accuracyPercentage:String = String(Math.round(enemiesKilled / shotsFired * 1000) / 100);
+			var timePlayed:String = timerDisplay.text;
+			
+			// Display "game over" title
+			var title:TextField = new TextField;
+			title.x = (GameState.WIDTH - title.width) / 2;
+			title.y = 10;
+			title.defaultTextFormat = new TextFormat("_typewriter", 30, 0xffffff, true);
+			title.autoSize = "center";
+			title.text = "GAME OVER";
+			title.selectable = false;
+			addChild(title);
+			
+			// Display stats
+			var stats:TextField = new TextField;
+			stats.x = (GameState.WIDTH - stats.width) / 2;
+			stats.y = 40;
+			stats.defaultTextFormat = new TextFormat("_typewriter", 15, 0xffffff, true);
+			stats.autoSize = "center";
+			stats.text = "";
+			stats.appendText("Time Played: " + timePlayed + "\n");
+			stats.appendText("Accuracy: " + accuracyPercentage + "%\n");
+			stats.appendText("Enemies Killed: " + enemiesKilled);
+			stats.selectable = false;
+			addChild(stats);
+			
+			// Display button to play again
+			playButton.x = (GameState.WIDTH - playButton.width) / 2;
+			playButton.y = 300;
+			playButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			playButton.autoSize = "center";
+			playButton.text = "Play Again?";
+			playButton.selectable = false;
+			addChild(playButton);
+			
+			// Can probably improve this by just calling another function in the GameState class to start the play state over
+			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
 		}
 		
 		private function updateKeys():void
