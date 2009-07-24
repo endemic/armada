@@ -29,7 +29,7 @@ package
 		private var title:TextField = new TextField;
 		private var playButton:TextField = new TextField;
 		
-		private var _canvas:BitmapData = new BitmapData(WIDTH, HEIGHT, false, 0xffffff);
+		private var _canvas:BitmapData = new BitmapData(GameState.WIDTH, GameState.HEIGHT, false, 0xffffff);
 		
 		private var stars:Array = new Array;
 		private var starShape:Shape = new Shape;
@@ -44,8 +44,8 @@ package
 			starShape.graphics.drawCircle(0, 0, 1);
 			
 			// Create "hoshizora" background
-			for(var i:int = 0; i < MAX_STARS; i++)
-				stars.push(new Actor(Math.random() * WIDTH, Math.random() * HEIGHT, starShape, 0, Math.random() * 3 + 2));
+			for(var i:int = 0; i < GameState.MAX_STARS; i++)
+				stars.push(new Actor(Math.random() * GameState.WIDTH, Math.random() * GameState.HEIGHT, starShape, 0, Math.random() * 3 + 2));
 			
 			// Show game title
 			title.x = (GameState.WIDTH - title.width) / 2;
@@ -53,6 +53,7 @@ package
 			title.defaultTextFormat = new TextFormat("_typewriter", 30, 0xffffff, true);
 			title.autoSize = "center";
 			title.text = "ARMADA";
+			title.selectable = false;
 			addChild(title);
 			
 			// Show "play" button
@@ -61,10 +62,10 @@ package
 			playButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
 			playButton.autoSize = "center";
 			playButton.text = "Play";
-			playButton.buttonMode = true;
+			playButton.selectable = false;
 			addChild(playButton);
 			
-			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); stage.focus = this; });
+			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); stage.focus = Game.currentState; });
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}
 		
@@ -91,6 +92,11 @@ package
 			/**
 			END DRAWING
 			*/
+			
+			// Update star position
+			for(var i:int = 0; i < stars.length; i++)
+				if(!stars[i].update())
+					stars.splice(i, 1, new Actor(Math.random() * GameState.WIDTH, 0, starShape, 0, Math.random() * 3 + 2)); 
 		}
 		
 		public function destroy():void

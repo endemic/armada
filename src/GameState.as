@@ -313,12 +313,9 @@ package
 			// Makes values in key array "2" if button is held down
 			updateKeys();
 			
-			// Increase player movement/shooting speed for every 100 enemies killed
-			if (enemiesKilled % 100 == 0 && enemiesKilled > 0)
-			{
-				player.velocity.x += 0.25;
-				player.velocity.y += 0.25;
-			}
+			// Increase player movement/shooting speed for every enemy killed			
+			player.velocity.x = 1 + 0.0025 * enemiesKilled;
+			player.velocity.y = 1 + 0.0025 * enemiesKilled;
 		}
 		
 		private function resetGame():void
@@ -346,7 +343,7 @@ package
 			player.position.y = 300;
 		}
 		
-		private function gameOver():void
+		private function endGame():void
 		{
 			gameOver = true;
 			
