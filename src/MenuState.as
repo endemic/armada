@@ -28,6 +28,7 @@ package
 	{
 		private var title:TextField = new TextField;
 		private var playButton:TextField = new TextField;
+		private var storyButton:TextField = new TextField;
 		
 		private var _canvas:BitmapData = new BitmapData(GameState.WIDTH, GameState.HEIGHT, false, 0xffffff);
 		
@@ -49,7 +50,7 @@ package
 			
 			// Show game title
 			title.x = (GameState.WIDTH - title.width) / 2;
-			title.y = 10;
+			title.y = 20;
 			title.defaultTextFormat = new TextFormat("_typewriter", 30, 0xffffff, true);
 			title.autoSize = "center";
 			title.text = "ARMADA";
@@ -64,6 +65,15 @@ package
 			playButton.text = "Play";
 			playButton.selectable = false;
 			addChild(playButton);
+			
+			// Show "story" button
+			storyButton.x = (GameState.WIDTH - storyButton.width) / 2;
+			storyButton.y = 330;
+			storyButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			storyButton.autoSize = "center";
+			storyButton.text = "Story";
+			storyButton.selectable = false;
+			addChild(storyButton);
 			
 			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
@@ -103,6 +113,7 @@ package
 		{
 			removeChild(title);
 			removeChild(playButton);
+			removeChild(storyButton);
 			playButton.removeEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}

@@ -13,6 +13,7 @@ package
 	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
@@ -65,7 +66,7 @@ package
 		private var gameOver:Boolean = false;
 		
 		public function GameState():void
-		{
+		{	
 			// Do all drawing on this
 			addChild(new Bitmap(_canvas));
 			
@@ -196,9 +197,13 @@ package
 			_ticks++;
 			
 			// Calculate time played
-			var seconds:Number = _ticks / 30;	
-			timerDisplay.text = String(Math.round(seconds * 10) / 10);
-			if(timerDisplay.text.indexOf(".") == -1) timerDisplay.appendText(".0");	// Append .0 if a whole number
+			var seconds:Number = _ticks / 30;
+			if (!gameOver)
+			{
+				timerDisplay.text = String(Math.round(seconds * 10) / 10);
+				if (timerDisplay.text.indexOf(".") == -1) 
+					timerDisplay.appendText(".0");	// Append .0 if a whole number
+			}
 			
 			// Counters
 			var i:int = 0, j:int = 0;
@@ -209,9 +214,15 @@ package
 	        if (_keys[0x27] || _keys[0x44]) player.position.x += player.velocity.x; 
 	        if (_keys[0x28] || _keys[0x53]) player.position.y += player.velocity.y;
 			
+			// Enforce boundaries
+			if (player.position.x > WIDTH) player.position.x = WIDTH;
+			if (player.position.x < 0) player.position.x = 0;
+			if (player.position.y > HEIGHT) player.position.y = HEIGHT;
+			if (player.position.y < 0) player.position.y = 0;
+			
 			// Shoot
 			if (_keys[32] && !gameOver)
-				if (shootDelay++ > 8 / player.velocity.x) 
+				if (shootDelay++ > 8 / player.velocity.x || _keys[32] == 1) 
 				{
 					shootDelay = 0;
 					playerShootSound.play();
@@ -381,13 +392,13 @@ package
 			_canvas.colorTransform(cr, ct);
 			
 			// Figure out some stats
-			var accuracyPercentage:String = String(Math.round(enemiesKilled / shotsFired * 1000) / 100);
+			var accuracyPercentage:String = String(Math.round(enemiesKilled / shotsFired * 1000) / 10);
 			var timePlayed:String = timerDisplay.text;
 			
 			// Display "game over" title
 			var title:TextField = new TextField;
 			title.x = (GameState.WIDTH - title.width) / 2;
-			title.y = 10;
+			title.y = 20;
 			title.defaultTextFormat = new TextFormat("_typewriter", 30, 0xffffff, true);
 			title.autoSize = "center";
 			title.text = "GAME OVER";
@@ -397,17 +408,19 @@ package
 			// Display stats
 			var stats:TextField = new TextField;
 			stats.x = (GameState.WIDTH - stats.width) / 2;
-			stats.y = 40;
-			stats.defaultTextFormat = new TextFormat("_typewriter", 15, 0xffffff, true);
+			stats.y = 60;
+			stats.defaultTextFormat = new TextFormat("_typewriter", 15, 0xffffff, true, null, null, null, null, "center");
 			stats.autoSize = "center";
 			stats.text = "";
-			stats.appendText("Time Played: " + timePlayed + "\n");
+			stats.appendText("Time Played: " + timePlayed + "s\n");
+			stats.appendText("Shots Fired: " + shotsFired + "\n");
+			stats.appendText("Enemies Killed: " + enemiesKilled + "\n");
 			stats.appendText("Accuracy: " + accuracyPercentage + "%\n");
-			stats.appendText("Enemies Killed: " + enemiesKilled);
 			stats.selectable = false;
 			addChild(stats);
 			
 			// Display button to play again
+			var playButton:TextField = new TextField;
 			playButton.x = (GameState.WIDTH - playButton.width) / 2;
 			playButton.y = 300;
 			playButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
@@ -418,6 +431,11 @@ package
 			
 			// Can probably improve this by just calling another function in the GameState class to start the play state over
 			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
+		}
+		
+		private function winGame():void 
+		{
+			
 		}
 		
 		private function updateKeys():void
