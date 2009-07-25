@@ -12,8 +12,8 @@ package
 		public var rotation:Number = 1.57079633;		// 90 degrees, neutral
 		
 		public var bitmap:BitmapData;
-		public var width:int;
-		public var height:int;
+		public var width:Number;
+		public var height:Number;
 		public var ticksSinceSpawned:int = 0;
 		
 		public function Actor(X:Number, Y:Number, s:Shape, VelX:Number = 0, VelY:Number = 0):void

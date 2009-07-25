@@ -14,11 +14,13 @@ package
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.FocusEvent;
 	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
 	import flash.media.Sound;
+	import flash.media.SoundChannel;
 	
 	public class GameState extends Sprite
 	{
@@ -44,6 +46,10 @@ package
 		private var enemyBulletShape:Shape = new Shape;
 		private var starShape:Shape = new Shape;
 		private var particleShape:Shape = new Shape;
+		private var playerParticleShape:Shape = new Shape;
+		
+		// Sounds/music
+		private var soundChannel:SoundChannel = new SoundChannel;
 		
 		[Embed(source="../sounds/enemyshoot.mp3")] private var EnemyShootSound:Class;
 		private var enemyShootSound:Sound = new EnemyShootSound() as Sound;
@@ -53,6 +59,8 @@ package
 		private var playerDieSound:Sound = new PlayerDieSound() as Sound;
 		[Embed(source="../sounds/pew2.mp3")] private var PlayerShootSound:Class;
 		private var playerShootSound:Sound = new PlayerShootSound() as Sound;
+		[Embed(source="../music/bg.mp3")] private var BackgroundMusic:Class;
+		private var backgroundMusic:Sound = new BackgroundMusic() as Sound;
 		
 		private var spacePressed:Boolean;
 		private var shootDelay:int = 0;
@@ -64,6 +72,7 @@ package
 		private var enemiesKilledDisplay:TextField = new TextField;
 		private var timerDisplay:TextField = new TextField;
 		private var gameOver:Boolean = false;
+		private var gamePaused:Boolean = false;
 		
 		public function GameState():void
 		{	
@@ -89,9 +98,11 @@ package
 			timerDisplay.text = "0.0";
 			
 			// Create shape for ship
-			shipShape.graphics.beginFill(0xffffff);
+			//shipShape.graphics.beginFill(0xffffff);
+			shipShape.graphics.lineStyle(1, 0xffffff);
 			shipShape.graphics.moveTo(5, 0);
 			shipShape.graphics.lineTo(10, 10);
+			shipShape.graphics.lineTo(5, 8);
 			shipShape.graphics.lineTo(0, 10);
 			shipShape.graphics.lineTo(5, 0);
 			shipShape.graphics.endFill();
@@ -119,6 +130,9 @@ package
 			particleShape.graphics.lineStyle(1, 0xff0000);
 			particleShape.graphics.drawCircle(0, 0, 1);
 			
+			playerParticleShape.graphics.lineStyle(1, 0xffffff);
+			playerParticleShape.graphics.drawCircle(0, 0, 1);
+			
 			// Create "hoshizora" background
 			for(var i:int = 0; i < MAX_STARS; i++)
 				stars.push(new Actor(Math.random() * WIDTH, Math.random() * HEIGHT, starShape, 0, Math.random() * 3 + 2));
@@ -134,9 +148,14 @@ package
 			// Init keyboard values
 			for(i = 0; i < _keys.length; i++) _keys[i] = 0;
 			
+			// Start music
+			soundChannel = backgroundMusic.play(0, 9999);
+			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			Game.main.stage.focus = null;		// Reset focus
 			Game.main.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void { if(_keys[e.keyCode] == 0) _keys[e.keyCode] = 1; } );
 		    Game.main.stage.addEventListener(KeyboardEvent.KEY_UP,   function(e:KeyboardEvent):void { _keys[e.keyCode] = 0; } );
+			Game.main.stage.addEventListener(FocusEvent.FOCUS_OUT, function (e:Event):void { gamePaused = true; trace("Focus event!" + e.type); } );
 		}
 		
 		private function onEnterFrame(e:Event):void
@@ -205,8 +224,14 @@ package
 					timerDisplay.appendText(".0");	// Append .0 if a whole number
 			}
 			
+			if (!gameOver)
+				Game.main.cursor.visible = false;	// Hide mouse cursor
+			
 			// Counters
-			var i:int = 0, j:int = 0;
+			var i:int = 0, j:int = 0, k:int = 0;
+			
+			// For particle explosions
+			var particleDirection:Number;
 			
 			// Update player position
 			if (_keys[0x25] || _keys[0x41]) player.position.x -= player.velocity.x; 
@@ -274,9 +299,9 @@ package
 						enemyDieSound.play();
 						
 						// Create particle explosion
-						for(var k:int = 0; k < MAX_PARTICLES; k++)
+						for(k = 0; k < MAX_PARTICLES; k++)
 						{	
-							var particleDirection:Number = Math.random() * 2 * Math.PI;		// Random angle in radians
+							particleDirection = Math.random() * 2 * Math.PI;		// Random angle in radians
 							particles.push(new Actor(enemies[j].position.x, enemies[j].position.y, particleShape, Math.cos(particleDirection) * 2, Math.sin(particleDirection) * 2));
 						}
 						
@@ -309,6 +334,12 @@ package
 				// Check for collision between enemy bullets and player
 				if (enemyBullets[i].collidesWith(player))
 				{
+					// Create particle explosion
+					for(k = 0; k < MAX_PARTICLES; k++)
+					{	
+						particleDirection = Math.random() * 2 * Math.PI;		// Random angle in radians
+						particles.push(new Actor(player.position.x, player.position.y, playerParticleShape, Math.cos(particleDirection) * 2, Math.sin(particleDirection) * 2));
+					}
 					playerDieSound.play();
 					//resetGame();
 					endGame();
@@ -380,6 +411,8 @@ package
 		private function endGame():void
 		{
 			gameOver = true;
+			Game.main.cursor.visible = true;
+			soundChannel.stop();
 			
 			// Remove all bullets, enemies
 			while(bullets.length > 0) bullets.splice(0, 1);
@@ -393,6 +426,7 @@ package
 			
 			// Figure out some stats
 			var accuracyPercentage:String = String(Math.round(enemiesKilled / shotsFired * 1000) / 10);
+			if (accuracyPercentage == "NaN") accuracyPercentage = "0";		// If division by zero 'cos no shots fired
 			var timePlayed:String = timerDisplay.text;
 			
 			// Display "game over" title
@@ -430,7 +464,9 @@ package
 			addChild(playButton);
 			
 			// Can probably improve this by just calling another function in the GameState class to start the play state over
-			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
+			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
+			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 		}
 		
 		private function winGame():void 

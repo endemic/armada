@@ -75,7 +75,9 @@ package
 			storyButton.selectable = false;
 			addChild(storyButton);
 			
-			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
+			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
+			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}
 		

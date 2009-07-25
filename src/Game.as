@@ -8,13 +8,21 @@
 package
 {
 	
+	import flash.display.IBitmapDrawable;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.ui.Mouse;
 	
 	public class Game extends Sprite
 	{
 		static public var main:Object;
 		static public var currentState:*;
+		
+		[Embed(source = "../graphics/cursor-white.svg")] private var WhiteCursor:Class;
+		[Embed(source = "../graphics/cursor-black.svg")] private var BlackCursor:Class;
+		
+		public var cursor:Sprite = new Sprite;
 		
 		public function Game():void
 		{
@@ -27,6 +35,20 @@ package
 			// Entry point
 			main = this;
 			switchState(MenuState);
+			
+			// For custom mouse cursor
+			Mouse.hide();
+			cursor.addChild(new WhiteCursor);
+			cursor.addChild(new BlackCursor);
+			cursor.visible = false;
+			addChild(cursor);
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, function (e:MouseEvent):void { cursor.visible = true;  cursor.x = e.stageX; cursor.y = e.stageY; } );
+			stage.addEventListener(Event.MOUSE_LEAVE, function (e:Event):void { cursor.visible = false; } );
+		}
+		
+		public function swapCursorState(e:Event = null):void 
+		{
+			cursor.swapChildrenAt(0, 1);
 		}
 		
 		static public function switchState(state:Class):void
