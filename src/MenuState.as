@@ -24,6 +24,8 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import caurina.transitions.Tweener;
+	
 	public class MenuState extends Sprite 
 	{
 		private var title:TextField = new TextField;
@@ -75,10 +77,36 @@ package
 			storyButton.selectable = false;
 			addChild(storyButton);
 			
+			// Event listeners for "play" button
 			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
 			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			
+			storyButton.addEventListener(MouseEvent.MOUSE_DOWN, showStory);
+			storyButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			storyButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
+		}
+		
+		private function showStory(e:Event = null):void 
+		{
+			title.visible = false;
+			playButton.visible = false;
+			storyButton.visible = false;
+			
+			var storyText:TextField = new TextField;
+			storyText.x = 10;
+			storyText.y = GameState.HEIGHT;
+			storyText.width = GameState.WIDTH - 20;
+			storyText.defaultTextFormat = new TextFormat("_typewriter", 12, 0xffffff, true);
+			storyText.autoSize = "left";
+			storyText.wordWrap = true;
+			storyText.selectable = false;
+			storyText.text = "So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!!";
+			addChild(storyText);
+			
+			Tweener.addTween(storyText, { transition: 'linear', y: 0 - storyText.height, time: 5, onComplete: function():void { storyText.visible = false; title.visible = true; playButton.visible = true; storyButton.visible = true; } } );
 		}
 		
 		private function onEnterFrame(e:Event):void
