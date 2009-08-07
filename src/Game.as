@@ -14,6 +14,8 @@ package
 	import flash.events.MouseEvent;
 	import flash.ui.Mouse;
 	
+	import com.kongregate.as3.client.KongregateAPI;
+	
 	public class Game extends Sprite
 	{
 		static public var main:Object;
@@ -23,6 +25,7 @@ package
 		[Embed(source = "../graphics/cursor-black.svg")] private var BlackCursor:Class;
 		
 		public var cursor:Sprite = new Sprite;
+		public var kongregate:KongregateAPI = new KongregateAPI;
 		
 		public function Game():void
 		{
@@ -44,6 +47,9 @@ package
 			addChild(cursor);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, function (e:MouseEvent):void { cursor.visible = true;  cursor.x = e.stageX; cursor.y = e.stageY; } );
 			stage.addEventListener(Event.MOUSE_LEAVE, function (e:Event):void { cursor.visible = false; } );
+			
+			// Add Kongregate component
+			addChild(kongregate);
 		}
 		
 		public function swapCursorState(e:Event = null):void 

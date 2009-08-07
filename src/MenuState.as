@@ -33,7 +33,7 @@ package
 	{
 		private var title:TextField = new TextField;
 		private var playButton:TextField = new TextField;
-		private var storyButton:TextField = new TextField;
+		private var scoresButton:TextField = new TextField;
 		private var creditsButton:TextField = new TextField;
 		
 		private var _canvas:BitmapData = new BitmapData(GameState.WIDTH, GameState.HEIGHT, false, 0xffffff);
@@ -73,14 +73,14 @@ package
 			addChild(playButton);
 			
 			// Show "story" button
-			storyButton.x = (GameState.WIDTH - storyButton.width) / 2;
-			storyButton.y = 330;
-			storyButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
-			storyButton.autoSize = "center";
-			storyButton.text = "Story";
-			storyButton.selectable = false;
-			storyButton.visible = false;
-			addChild(storyButton);
+			scoresButton.x = (GameState.WIDTH - scoresButton.width) / 2;
+			scoresButton.y = 330;
+			scoresButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			scoresButton.autoSize = "center";
+			scoresButton.text = "Best Times";
+			scoresButton.selectable = false;
+			scoresButton.visible = true;
+			addChild(scoresButton);
 			
 			// Show "credits" button
 			creditsButton.x = (GameState.WIDTH - creditsButton.width) / 2;
@@ -96,10 +96,10 @@ package
 			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
-			// Add event listeners for "story" button
-			storyButton.addEventListener(MouseEvent.MOUSE_DOWN, showStory);
-			storyButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
-			storyButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			// Add event listeners for "scores" button
+			scoresButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.main.kongregate.scores.requestList(showScores) });	// Request kongregate list and add "showScores" as a callback
+			scoresButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			scoresButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
 			// Etc.
 			creditsButton.addEventListener(MouseEvent.MOUSE_DOWN, function (e:Event):void { navigateToURL(new URLRequest('http://www.bitter-gamer.com/'), '_blank') });
@@ -109,25 +109,32 @@ package
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}
 		
-		private function showStory(e:Event = null):void 
+		private function showScores(result:Object):void 
 		{
 			title.visible = false;
 			playButton.visible = false;
-			storyButton.visible = false;
+			scoresButton.visible = false;
 			creditsButton.visible = false;
+
+			var scoresText:TextField = new TextField;
+			scoresText.x = 10;
+			scoresText.y = 20;
+			scoresText.width = GameState.WIDTH - 20;
+			scoresText.defaultTextFormat = new TextFormat("_typewriter", 12, 0xffffff, true);
+			scoresText.autoSize = "left";
+			//storyText.wordWrap = true;
+			scoresText.selectable = false;
+			//storyText.text = "Earth is at war. The evil Hisnap Armada has been terrorizing the galaxy for years, systema- tically conquering one civilization after another. Your fighter squadron was the last line of defense against the Hisnaps. Their Armada is attacking today. The problem is that your squadmates all drank a little too much last night, and are nursing powerful, gut-wrenching hangovers. You probably can't count on them in a fight. It's up to you to destroy the Hisnaps by yourself. They're not too smart, but there are a lot of 'em. Are you up to the challenge?";
+			scoresText.text = "";
+			addChild(scoresText);
 			
-			var storyText:TextField = new TextField;
-			storyText.x = 10;
-			storyText.y = GameState.HEIGHT;
-			storyText.width = GameState.WIDTH - 20;
-			storyText.defaultTextFormat = new TextFormat("_typewriter", 12, 0xffffff, true);
-			storyText.autoSize = "left";
-			storyText.wordWrap = true;
-			storyText.selectable = false;
-			storyText.text = "Earth is at war. The evil Hisnap Armada has been terrorizing the galaxy for years, systema- tically conquering one civilization after another. Your fighter squadron was the last line of defense against the Hisnaps. Their Armada is attacking today. The problem is that your squadmates all drank a little too much last night, and are nursing powerful, gut-wrenching hangovers. You probably can't count on them in a fight. It's up to you to destroy the Hisnaps by yourself. They're not too smart, but there are a lot of 'em. Are you up to the challenge?";
-			addChild(storyText);
+			for(var i:int = 0; i < result.list.length; i++)
+			{
+				var position:int = i + 1;
+				scoresText.appendText("\n" + position + ". " + result.list[i].username + ' - ' + result.list[i].score);
+			}
 			
-			Tweener.addTween(storyText, { transition: 'linear', y: 0 - storyText.height, time: 20, onComplete: function():void { storyText.visible = false; title.visible = true; playButton.visible = true; storyButton.visible = true; } } );
+			//Tweener.addTween(storyText, { transition: 'linear', y: 0 - storyText.height, time: 20, onComplete: function():void { storyText.visible = false; title.visible = true; playButton.visible = true; storyButton.visible = true; } } );
 		}
 		
 		private function onEnterFrame(e:Event):void
@@ -164,7 +171,7 @@ package
 		{
 			removeChild(title);
 			removeChild(playButton);
-			removeChild(storyButton);
+			removeChild(scoresButton);
 			playButton.removeEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); });
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}

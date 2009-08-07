@@ -19,7 +19,7 @@ package
 		public var spawnNumber:int = 0;
 		// Add "spawnNumber" here... use an array to push enemy shapes/explosions
 		// i.e. spawnNumber = 103, create enemy/particles with enemyShape[103], particleShape[103]
-		public function Actor(X:Number, Y:Number, s:Shape, VelX:Number = 0, VelY:Number = 0, SpawnNumber = 0):void
+		public function Actor(X:Number, Y:Number, s:Shape, VelX:Number = 0, VelY:Number = 0, SpawnNumber:int = 0):void
 		{
 			position.x = X; position.y = Y;
 			width = s.width; height = s.height;

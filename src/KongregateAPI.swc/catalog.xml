@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.0" />
+    <flash version="9.0" build="r494" platform="WIN" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-components />
+    <feature-files />
+  </features>
+  <components>
+    <component className="com.kongregate.as3.client:KongregateAPI" name="KongregateAPI" icon="kongregate.png" tooltip="Kongregate AS3 API"  />
+  </components>
+  <libraries>
+    <library path="library.swf">
+      <script name="com/kongregate/as3/client/IAPIBootstrap" mod="1195075098000" >
+        <def id="com.kongregate.as3.client:IAPIBootstrap" /> 
+        <dep id="Object" type="i" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Stage" type="s" /> 
+        <dep id="flash.events:Event" type="s" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/IStatServices" mod="1193433435484" >
+        <def id="com.kongregate.as3.client.services:IStatServices" /> 
+        <dep id="Object" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/IHighScoreServices" mod="1193863124625" >
+        <def id="com.kongregate.as3.client.services:IHighScoreServices" /> 
+        <dep id="Object" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/IUserServices" mod="1193858702453" >
+        <def id="com.kongregate.as3.client.services:IUserServices" /> 
+        <dep id="Object" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/IKongregateServices" mod="1195234723515" >
+        <def id="com.kongregate.as3.client.services:IKongregateServices" /> 
+        <dep id="flash.events:IEventDispatcher" type="i" /> 
+        <dep id="Object" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/events/KongregateEvent" mod="1193696266875" >
+        <def id="com.kongregate.as3.client.events:KongregateEvent" /> 
+        <dep id="flash.events:Event" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/AbstractShadowService" mod="1193434641109" >
+        <def id="com.kongregate.as3.client.services:AbstractShadowService" /> 
+        <dep id="flash.events:EventDispatcher" type="i" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="trace" type="e" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/HighScoreServiceShadow" mod="1193862205187" >
+        <def id="com.kongregate.as3.client.services:HighScoreServiceShadow" /> 
+        <dep id="com.kongregate.as3.client.services:AbstractShadowService" type="i" /> 
+        <dep id="com.kongregate.as3.client.services:IHighScoreServices" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/KongregateServiceShadow" mod="1193858254328" >
+        <def id="com.kongregate.as3.client.services:KongregateServiceShadow" /> 
+        <dep id="com.kongregate.as3.client.services:AbstractShadowService" type="i" /> 
+        <dep id="com.kongregate.as3.client.services:IKongregateServices" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/StatServiceShadow" mod="1193434054015" >
+        <def id="com.kongregate.as3.client.services:StatServiceShadow" /> 
+        <dep id="com.kongregate.as3.client.services:AbstractShadowService" type="i" /> 
+        <dep id="com.kongregate.as3.client.services:IStatServices" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/services/UserServiceShadow" mod="1193858293859" >
+        <def id="com.kongregate.as3.client.services:UserServiceShadow" /> 
+        <dep id="com.kongregate.as3.client.services:AbstractShadowService" type="i" /> 
+        <dep id="com.kongregate.as3.client.services:IUserServices" type="i" /> 
+        <dep id="AS3" type="n" /> 
+      </script>
+      <script name="com/kongregate/as3/client/KongregateAPI" mod="1196095828921" >
+        <def id="com.kongregate.as3.client:KongregateAPI" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:TimerEvent" type="s" /> 
+        <dep id="com.kongregate.as3.client.services:IStatServices" type="s" /> 
+        <dep id="com.kongregate.as3.client.services:IUserServices" type="s" /> 
+        <dep id="flash.system:LoaderContext" type="s" /> 
+        <dep id="flash.utils:Timer" type="s" /> 
+        <dep id="flash.events:Event" type="s" /> 
+        <dep id="com.kongregate.as3.client:IAPIBootstrap" type="s" /> 
+        <dep id="com.kongregate.as3.client.events:KongregateEvent" type="s" /> 
+        <dep id="flash.net:URLRequest" type="s" /> 
+        <dep id="flash.events:IOErrorEvent" type="s" /> 
+        <dep id="com.kongregate.as3.client.services:IHighScoreServices" type="s" /> 
+        <dep id="flash.display:Loader" type="s" /> 
+        <dep id="flash.system:ApplicationDomain" type="s" /> 
+        <dep id="com.kongregate.as3.client.services:IKongregateServices" type="s" /> 
+        <dep id="flash.errors:IOError" type="e" /> 
+        <dep id="com.kongregate.as3.client.services:StatServiceShadow" type="e" /> 
+        <dep id="flash.events:TimerEvent" type="e" /> 
+        <dep id="flash.system:LoaderContext" type="e" /> 
+        <dep id="flash.errors:IllegalOperationError" type="e" /> 
+        <dep id="flash.utils:Timer" type="e" /> 
+        <dep id="flash.events:Event" type="e" /> 
+        <dep id="com.kongregate.as3.client:IAPIBootstrap" type="e" /> 
+        <dep id="com.kongregate.as3.client.services:UserServiceShadow" type="e" /> 
+        <dep id="com.kongregate.as3.client.events:KongregateEvent" type="e" /> 
+        <dep id="flash.net:URLRequest" type="e" /> 
+        <dep id="flash.display:Loader" type="e" /> 
+        <dep id="flash.events:IOErrorEvent" type="e" /> 
+        <dep id="flash.display:LoaderInfo" type="e" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.system:ApplicationDomain" type="e" /> 
+        <dep id="com.kongregate.as3.client.services:KongregateServiceShadow" type="e" /> 
+        <dep id="com.kongregate.as3.client.services:HighScoreServiceShadow" type="e" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.system:SecurityDomain" type="e" /> 
+      </script>
+      <script name="fl/livepreview/LivePreviewParent" mod="1196095828921" >
+        <def id="fl.livepreview:LivePreviewParent" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:DisplayObject" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="flash.external:ExternalInterface" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.display:StageScaleMode" type="e" /> 
+        <dep id="flash.display:StageAlign" type="e" /> 
+        <dep id="flash.utils:getDefinitionByName" type="e" /> 
+      </script>
+    </library>
+  </libraries>
+  <files>
+    <file path="kongregate.png" mod="1193864420046" />
+  </files>
+</swc>

@@ -41,11 +41,13 @@ package
 		private var particles:Array = new Array;
 		
 		private var shipShape:Shape = new Shape;	// ha ha ha "ship shape"
-		private var enemyShape:Shape = new Shape;
+		//private var enemyShape:Shape = new Shape;
+		private var enemyShapes:Array = new Array;
 		private var bulletShape:Shape = new Shape;
 		private var enemyBulletShape:Shape = new Shape;
 		private var starShape:Shape = new Shape;
-		private var particleShape:Shape = new Shape;
+		private var particleShapes:Array = new Array;
+		//private var particleShape:Shape = new Shape;
 		private var playerParticleShape:Shape = new Shape;
 		
 		// Sounds/music
@@ -107,17 +109,25 @@ package
 			shipShape.graphics.lineTo(5, 0);
 			shipShape.graphics.endFill();
 			
-			// Create shape for enemies
-			enemyShape.graphics.lineStyle(2, 0xff0000);
-			enemyShape.graphics.moveTo(5, 0);
-			enemyShape.graphics.lineTo(10, 10);
-			enemyShape.graphics.lineTo(0, 10);
-			enemyShape.graphics.lineTo(5, 0);
+			// purple, blue, cyan, yellow, orange, red
+			var enemyColors:Array = new Array(0xff00ff, 0x0000ff, 0x00ccff, 0xffff00, 0xff6600, 0xff0000);
 			
-			enemyShape.graphics.lineStyle(2, 0x0000ff);
-			enemyShape.graphics.lineStyle(2, 0xff00ff);
+			for(var i:int = 0; i < enemyColors.length; i++)
+			{
+				// Create enemy shapes
+				enemyShapes.push(new Shape);
+				enemyShapes[i].graphics.lineStyle(2, enemyColors[i]);
+				enemyShapes[i].graphics.moveTo(5, 0);
+				enemyShapes[i].graphics.lineTo(10, 10);
+				enemyShapes[i].graphics.lineTo(0, 10);
+				enemyShapes[i].graphics.lineTo(5, 0);
+				
+				// Create enemy particle shapes
+				particleShapes.push(new Shape);
+				particleShapes[i].graphics.lineStyle(1, enemyColors[i]);
+				particleShapes[i].graphics.drawCircle(0, 0, 1);
+			}
 			
-			enemyShape.graphics.lineStyle(2, 0xffff00);
 				
 			// Create shape for bullet
 			bulletShape.graphics.lineStyle(1, 0xffffff);
@@ -131,21 +141,18 @@ package
 			starShape.graphics.lineStyle(1, 0x666666);
 			starShape.graphics.drawCircle(0, 0, 1);
 			
-			// Create shape for explosion particles
-			particleShape.graphics.lineStyle(1, 0xff0000);
-			particleShape.graphics.drawCircle(0, 0, 1);
-			
+			// Create shape for player explosion particles
 			playerParticleShape.graphics.lineStyle(1, 0xffffff);
 			playerParticleShape.graphics.drawCircle(0, 0, 1);
 			
 			// Create "hoshizora" background
-			for(var i:int = 0; i < MAX_STARS; i++)
+			for(i = 0; i < MAX_STARS; i++)
 				stars.push(new Actor(Math.random() * WIDTH, Math.random() * HEIGHT, starShape, 0, Math.random() * 3 + 2));
 			
 			// Add some random enemies
 			for(i = 0; i < 5; i++)
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
-			enemiesSpawned = 5;
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.ceil(enemiesSpawned / 1000 / 6)]));
+			enemiesSpawned = 160;
 			
 			// Init player
 			player = new Actor(100, 300, shipShape, 1, 1);
@@ -256,7 +263,7 @@ package
 				{
 					shootDelay = 0;
 					playerShootSound.play();
-					bullets.push(new Actor(player.position.x, player.position.y, bulletShape, 0, -5));
+					bullets.push(new Actor(player.position.x - 2, player.position.y, bulletShape, 0, -5));
 					shotsFired++;
 				}
 			
@@ -283,8 +290,8 @@ package
 			// Spawn a new enemy every 5 seconds
 			if(_ticks % 300 == 0 && !gameOver && enemiesSpawned < 1000)
 			{
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
 				enemiesSpawned++;
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)], 0, 0, enemiesSpawned));
 			}
 			
 			// Update bullet position
@@ -309,14 +316,14 @@ package
 						for(k = 0; k < MAX_PARTICLES; k++)
 						{	
 							particleDirection = Math.random() * 2 * Math.PI;		// Random angle in radians
-							particles.push(new Actor(enemies[j].position.x, enemies[j].position.y, particleShape, Math.cos(particleDirection) * 2, Math.sin(particleDirection) * 2));
+							particles.push(new Actor(enemies[j].position.x, enemies[j].position.y, particleShapes[Math.floor(enemies[j].spawnNumber / 166)], Math.cos(particleDirection) * 2, Math.sin(particleDirection) * 2));
 						}
 						
 						// Destroy enemy, but instantly create a new one to take its place
 						if(enemiesSpawned < 1000)
 						{
-							enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShape));
 							enemiesSpawned++;
+							enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)], 0, 0, enemiesSpawned));
 						}
 						else
 						{
@@ -408,7 +415,8 @@ package
 			
 			// Spawn some new enemies
 			for(var i:int = 0; i < 5; i++)
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShape));
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)]));
+			enemiesSpawned = 5;
 				
 			// Reset player
 			player.position.x = 100;
@@ -460,20 +468,44 @@ package
 			stats.selectable = false;
 			addChild(stats);
 			
+			// Submit stats to Kongregate
+			Game.main.kongregate.stats.submit('Time Played', timePlayed);
+			Game.main.kongregate.stats.submit('Shots Fired', shotsFired);
+			Game.main.kongregate.stats.submit('Enemies Killed', enemiesKilled);
+			Game.main.kongregate.stats.submit('Accuracy', accuracyPercentage);
+			
+			// Submit time "score"
+			Game.main.kongregate.scores.setMode('Normal');
+			Game.main.kongregate.scores.submit(timePlayed);
+			
 			// Display button to play again
 			var playButton:TextField = new TextField;
 			playButton.x = (GameState.WIDTH - playButton.width) / 2;
 			playButton.y = 300;
 			playButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
 			playButton.autoSize = "center";
-			playButton.text = "Play Again?";
+			playButton.text = "Play Again";
 			playButton.selectable = false;
 			addChild(playButton);
+			
+			// Display button to quit
+			var quitButton:TextField = new TextField;
+			quitButton.x = (GameState.WIDTH - quitButton.width) / 2;
+			quitButton.y = 320;
+			quitButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			quitButton.autoSize = "center";
+			quitButton.text = "Quit";
+			quitButton.selectable = false;
+			addChild(quitButton);
 			
 			// Can probably improve this by just calling another function in the GameState class to start the play state over
 			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
 			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			
+			quitButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(MenuState); } );
+			quitButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			quitButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 		}
 		
 		private function winGame():void 
@@ -521,6 +553,16 @@ package
 			stats.selectable = false;
 			addChild(stats);
 			
+			// Submit stats to Kongregate
+			Game.main.kongregate.stats.submit('Time Played', timePlayed);
+			Game.main.kongregate.stats.submit('Shots Fired', shotsFired);
+			Game.main.kongregate.stats.submit('Enemies Killed', enemiesKilled);
+			Game.main.kongregate.stats.submit('Accuracy', accuracyPercentage);
+			
+			// Submit time "score"
+			Game.main.kongregate.scores.setMode('Normal');
+			Game.main.kongregate.scores.submit(timePlayed);
+			
 			// Display button to play again
 			var playButton:TextField = new TextField;
 			playButton.x = (GameState.WIDTH - playButton.width) / 2;
@@ -531,10 +573,24 @@ package
 			playButton.selectable = false;
 			addChild(playButton);
 			
+			// Display button to quit
+			var quitButton:TextField = new TextField;
+			quitButton.x = (GameState.WIDTH - quitButton.width) / 2;
+			quitButton.y = 320;
+			quitButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			quitButton.autoSize = "center";
+			quitButton.text = "Quit";
+			quitButton.selectable = false;
+			addChild(quitButton);
+			
 			// Can probably improve this by just calling another function in the GameState class to start the play state over
 			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
 			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			
+			quitButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(MenuState); } );
+			quitButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			quitButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 		}
 		
 		private function updateKeys():void
