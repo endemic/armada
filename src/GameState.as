@@ -114,6 +114,11 @@ package
 			enemyShape.graphics.lineTo(0, 10);
 			enemyShape.graphics.lineTo(5, 0);
 			
+			enemyShape.graphics.lineStyle(2, 0x0000ff);
+			enemyShape.graphics.lineStyle(2, 0xff00ff);
+			
+			enemyShape.graphics.lineStyle(2, 0xffff00);
+				
 			// Create shape for bullet
 			bulletShape.graphics.lineStyle(1, 0xffffff);
 			bulletShape.graphics.drawCircle(1, 1, 1);
@@ -256,6 +261,8 @@ package
 				}
 			
 			// Update enemy position
+			var projectionVector:Point;
+			
 			for(i = 0; i < enemies.length; i++)
 			{
 				// Change velocity based on rotation
@@ -265,7 +272,7 @@ package
 				// Move 'em
 				enemies[i].update();
 				
-				// Shoot every so often - between 1 - 3 seconds
+				// Shoot every so often - randomly between 1 - 3 seconds
 				if (enemies[i].ticksSinceSpawned % (60 * int(Math.random() * 3 + 1)) == 0)
 				{
 					enemyBullets.push(new Actor(enemies[i].position.x + Math.cos(enemies[i].rotation) - enemies[i].width / 2, enemies[i].position.y + Math.sin(enemies[i].rotation) - enemies[i].height / 2, enemyBulletShape, Math.cos(enemies[i].rotation) * 2, Math.sin(enemies[i].rotation) * 2));
@@ -471,7 +478,63 @@ package
 		
 		private function winGame():void 
 		{
+			gameOver = true;
+			Game.main.cursor.visible = true;
+			soundChannel.stop();
 			
+			// Remove all bullets, enemies
+			while(bullets.length > 0) bullets.splice(0, 1);
+			while(enemyBullets.length > 0) enemyBullets.splice(0, 1);
+			while(enemies.length > 0) enemies.splice(0, 1);
+			
+			// Make the screen flash white
+			var cr:Rectangle = new Rectangle(0, 0, _canvas.width, _canvas.height);
+			var ct:ColorTransform = new ColorTransform(1, 1, 1, 1, 255, 255, 255);
+			_canvas.colorTransform(cr, ct);
+			
+			// Figure out some stats
+			var accuracyPercentage:String = String(Math.round(enemiesKilled / shotsFired * 1000) / 10);
+			if (accuracyPercentage == "NaN") accuracyPercentage = "0";		// If division by zero 'cos no shots fired
+			var timePlayed:String = timerDisplay.text;
+			
+			// Display "game over" title
+			var title:TextField = new TextField;
+			title.x = (GameState.WIDTH - title.width) / 2;
+			title.y = 20;
+			title.defaultTextFormat = new TextFormat("_typewriter", 30, 0xffffff, true);
+			title.autoSize = "center";
+			title.text = "A WINNER IS YOU";
+			title.selectable = false;
+			addChild(title);
+			
+			// Display stats
+			var stats:TextField = new TextField;
+			stats.x = (GameState.WIDTH - stats.width) / 2;
+			stats.y = 60;
+			stats.defaultTextFormat = new TextFormat("_typewriter", 15, 0xffffff, true, null, null, null, null, "center");
+			stats.autoSize = "center";
+			stats.text = "";
+			stats.appendText("Time Played: " + timePlayed + "s\n");
+			stats.appendText("Shots Fired: " + shotsFired + "\n");
+			stats.appendText("Enemies Killed: " + enemiesKilled + "\n");
+			stats.appendText("Accuracy: " + accuracyPercentage + "%\n");
+			stats.selectable = false;
+			addChild(stats);
+			
+			// Display button to play again
+			var playButton:TextField = new TextField;
+			playButton.x = (GameState.WIDTH - playButton.width) / 2;
+			playButton.y = 300;
+			playButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			playButton.autoSize = "center";
+			playButton.text = "Play Again?";
+			playButton.selectable = false;
+			addChild(playButton);
+			
+			// Can probably improve this by just calling another function in the GameState class to start the play state over
+			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
+			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 		}
 		
 		private function updateKeys():void

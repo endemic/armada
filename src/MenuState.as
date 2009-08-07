@@ -24,6 +24,9 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+	
 	import caurina.transitions.Tweener;
 	
 	public class MenuState extends Sprite 
@@ -31,6 +34,7 @@ package
 		private var title:TextField = new TextField;
 		private var playButton:TextField = new TextField;
 		private var storyButton:TextField = new TextField;
+		private var creditsButton:TextField = new TextField;
 		
 		private var _canvas:BitmapData = new BitmapData(GameState.WIDTH, GameState.HEIGHT, false, 0xffffff);
 		
@@ -75,16 +79,32 @@ package
 			storyButton.autoSize = "center";
 			storyButton.text = "Story";
 			storyButton.selectable = false;
+			storyButton.visible = false;
 			addChild(storyButton);
+			
+			// Show "credits" button
+			creditsButton.x = (GameState.WIDTH - creditsButton.width) / 2;
+			creditsButton.y = 380;
+			creditsButton.defaultTextFormat = new TextFormat("_typewriter", 10, 0xffffff, true);
+			creditsButton.autoSize = "center";
+			creditsButton.text = "bitter-gamer.com";
+			creditsButton.selectable = false;
+			addChild(creditsButton);
 			
 			// Event listeners for "play" button
 			playButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(GameState); } );
 			playButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
+			// Add event listeners for "story" button
 			storyButton.addEventListener(MouseEvent.MOUSE_DOWN, showStory);
 			storyButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			storyButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			
+			// Etc.
+			creditsButton.addEventListener(MouseEvent.MOUSE_DOWN, function (e:Event):void { navigateToURL(new URLRequest('http://www.bitter-gamer.com/'), '_blank') });
+			creditsButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			creditsButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);	// To update starry background
 		}
@@ -94,6 +114,7 @@ package
 			title.visible = false;
 			playButton.visible = false;
 			storyButton.visible = false;
+			creditsButton.visible = false;
 			
 			var storyText:TextField = new TextField;
 			storyText.x = 10;
@@ -103,10 +124,10 @@ package
 			storyText.autoSize = "left";
 			storyText.wordWrap = true;
 			storyText.selectable = false;
-			storyText.text = "So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!! So, this here is the storryyy!!";
+			storyText.text = "Earth is at war. The evil Hisnap Armada has been terrorizing the galaxy for years, systema- tically conquering one civilization after another. Your fighter squadron was the last line of defense against the Hisnaps. Their Armada is attacking today. The problem is that your squadmates all drank a little too much last night, and are nursing powerful, gut-wrenching hangovers. You probably can't count on them in a fight. It's up to you to destroy the Hisnaps by yourself. They're not too smart, but there are a lot of 'em. Are you up to the challenge?";
 			addChild(storyText);
 			
-			Tweener.addTween(storyText, { transition: 'linear', y: 0 - storyText.height, time: 5, onComplete: function():void { storyText.visible = false; title.visible = true; playButton.visible = true; storyButton.visible = true; } } );
+			Tweener.addTween(storyText, { transition: 'linear', y: 0 - storyText.height, time: 20, onComplete: function():void { storyText.visible = false; title.visible = true; playButton.visible = true; storyButton.visible = true; } } );
 		}
 		
 		private function onEnterFrame(e:Event):void
