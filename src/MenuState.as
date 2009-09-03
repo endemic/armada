@@ -27,7 +27,7 @@ package
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	
-	import caurina.transitions.Tweener;
+	//import caurina.transitions.Tweener;
 	
 	public class MenuState extends Sprite 
 	{
@@ -111,30 +111,50 @@ package
 		
 		private function showScores(result:Object):void 
 		{
-			title.visible = false;
+			//title.visible = false;
+			title.text = "BEST TIMES";
+			
 			playButton.visible = false;
 			scoresButton.visible = false;
 			creditsButton.visible = false;
-
+			
 			var scoresText:TextField = new TextField;
 			scoresText.x = 10;
 			scoresText.y = 20;
 			scoresText.width = GameState.WIDTH - 20;
 			scoresText.defaultTextFormat = new TextFormat("_typewriter", 12, 0xffffff, true);
 			scoresText.autoSize = "left";
-			//storyText.wordWrap = true;
 			scoresText.selectable = false;
-			//storyText.text = "Earth is at war. The evil Hisnap Armada has been terrorizing the galaxy for years, systema- tically conquering one civilization after another. Your fighter squadron was the last line of defense against the Hisnaps. Their Armada is attacking today. The problem is that your squadmates all drank a little too much last night, and are nursing powerful, gut-wrenching hangovers. You probably can't count on them in a fight. It's up to you to destroy the Hisnaps by yourself. They're not too smart, but there are a lot of 'em. Are you up to the challenge?";
 			scoresText.text = "";
 			addChild(scoresText);
 			
-			for(var i:int = 0; i < result.list.length; i++)
+			// Populate the "result" object for local testing purposes
+			if(!result.list)
+			{
+				var result:Object = new Object;
+				result.list = 
+				{
+					0: { 'username': 'user1', 'score': '320s' },
+					1: { 'username': 'user2', 'score': '330s' },
+					2: { 'username': 'user3', 'score': '340s' },
+					3: { 'username': 'user4', 'score': '350s' },
+					4: { 'username': 'user5', 'score': '320s' },
+					5: { 'username': 'user6', 'score': '320s' },
+					6: { 'username': 'user7', 'score': '320s' },
+					7: { 'username': 'user8', 'score': '320s' },
+					8: { 'username': 'user9', 'score': '320s' },
+					9: { 'username': 'user0', 'score': '320s' }
+				}
+			}
+
+			for(var i:int = 0; i < 10; i++)
 			{
 				var position:int = i + 1;
-				scoresText.appendText("\n" + position + ". " + result.list[i].username + ' - ' + result.list[i].score);
+				if(position < 10)
+					scoresText.appendText("\n " + position + ". " + result.list[i].username + ' - ' + result.list[i].score);	// Adds an extra space
+				else
+					scoresText.appendText("\n" + position + ". " + result.list[i].username + ' - ' + result.list[i].score);
 			}
-			
-			//Tweener.addTween(storyText, { transition: 'linear', y: 0 - storyText.height, time: 20, onComplete: function():void { storyText.visible = false; title.visible = true; playButton.visible = true; storyButton.visible = true; } } );
 		}
 		
 		private function onEnterFrame(e:Event):void

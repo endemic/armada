@@ -3,7 +3,7 @@
 //
 //  Created by Nathan Demick on 2009-07-06.
 //  Copyright (c) 2009 __MyCompanyName__. All rights reserved.
-// To compile: mxmlc Preloader.as -frame start Map -output Map.swf
+// To compile: mxmlc src/Preloader.as -frame start Game -output bin/Armada.swf -include-libraries src/KongregateAPI.swc
 
 package {
 	import flash.events.Event;
