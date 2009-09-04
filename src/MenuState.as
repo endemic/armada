@@ -120,7 +120,7 @@ package
 			
 			var scoresText:TextField = new TextField;
 			scoresText.x = 10;
-			scoresText.y = 20;
+			scoresText.y = 60;
 			scoresText.width = GameState.WIDTH - 20;
 			scoresText.defaultTextFormat = new TextFormat("_typewriter", 12, 0xffffff, true);
 			scoresText.autoSize = "left";
@@ -155,6 +155,20 @@ package
 				else
 					scoresText.appendText("\n" + position + ". " + result.list[i].username + ' - ' + result.list[i].score);
 			}
+			
+			// Display button to reset to main screen
+			var returnButton:TextField = new TextField;
+			returnButton.x = (GameState.WIDTH - returnButton.width) / 2;
+			returnButton.y = 320;
+			returnButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
+			returnButton.autoSize = "center";
+			returnButton.text = "Back";
+			returnButton.selectable = false;
+			addChild(returnButton);
+			
+			returnButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.switchState(MenuState); } );
+			returnButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			returnButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 		}
 		
 		private function onEnterFrame(e:Event):void

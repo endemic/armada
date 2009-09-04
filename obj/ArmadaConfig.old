@@ -9,6 +9,9 @@
       <path-element>C:\cygwin\home\Nathan\Flash\Armada\src</path-element>
       <path-element>C:\Program Files\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
+    <library-path append="true">
+      <path-element>C:\cygwin\home\Nathan\Flash\Armada\src\KongregateAPI.swc</path-element>
+    </library-path>
   </compiler>
   <file-specs>
     <path-element>C:\cygwin\home\Nathan\Flash\Armada\src\Preloader.as</path-element>

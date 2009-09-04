@@ -109,8 +109,8 @@ package
 			shipShape.graphics.lineTo(5, 0);
 			shipShape.graphics.endFill();
 			
-			// purple, blue, cyan, yellow, orange, red
-			var enemyColors:Array = new Array(0xff00ff, 0x0000ff, 0x00ccff, 0xffff00, 0xff6600, 0xff0000);
+			// red, purple, blue, cyan, yellow, orange
+			var enemyColors:Array = new Array(0xff0000, 0xff00ff, 0x0000ff, 0x00ccff, 0xffff00, 0xff6600);
 			
 			for(var i:int = 0; i < enemyColors.length; i++)
 			{
@@ -150,10 +150,12 @@ package
 				stars.push(new Actor(Math.random() * WIDTH, Math.random() * HEIGHT, starShape, 0, Math.random() * 3 + 2));
 			
 			// Add some random enemies
-			for(i = 0; i < 5; i++)
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.ceil(enemiesSpawned / 1000 / 6)]));
-			enemiesSpawned = 160;
-			
+			for (i = 0; i < 5; i++)
+			{
+				enemiesSpawned++;
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)]));
+			}
+
 			// Init player
 			player = new Actor(100, 300, shipShape, 1, 1);
 			
@@ -491,7 +493,7 @@ package
 			// Display button to quit
 			var quitButton:TextField = new TextField;
 			quitButton.x = (GameState.WIDTH - quitButton.width) / 2;
-			quitButton.y = 320;
+			quitButton.y = 340;
 			quitButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
 			quitButton.autoSize = "center";
 			quitButton.text = "Quit";
@@ -576,7 +578,7 @@ package
 			// Display button to quit
 			var quitButton:TextField = new TextField;
 			quitButton.x = (GameState.WIDTH - quitButton.width) / 2;
-			quitButton.y = 320;
+			quitButton.y = 340;
 			quitButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
 			quitButton.autoSize = "center";
 			quitButton.text = "Quit";
