@@ -155,7 +155,7 @@ package
 				enemiesSpawned++;
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)]));
 			}
-
+			
 			// Init player
 			player = new Actor(100, 300, shipShape, 1, 1);
 			
@@ -261,7 +261,7 @@ package
 			
 			// Shoot
 			if (_keys[32] && !gameOver)
-				if (shootDelay++ > 8 / player.velocity.x || _keys[32] == 1) 
+				if (shootDelay++ > 6 / player.velocity.x/* || _keys[32] == 1*/) 
 				{
 					shootDelay = 0;
 					playerShootSound.play();
@@ -289,8 +289,8 @@ package
 				}
 			}
 			
-			// Spawn a new enemy every 5 seconds
-			if(_ticks % 300 == 0 && !gameOver && enemiesSpawned < 1000)
+			// Spawn a new enemy every 8 seconds -- 5 seconds seemed too much
+			if(_ticks % 480 == 0 && !gameOver && enemiesSpawned < 1000)
 			{
 				enemiesSpawned++;
 				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)], 0, 0, enemiesSpawned));
@@ -324,8 +324,8 @@ package
 						// Destroy enemy, but instantly create a new one to take its place
 						if(enemiesSpawned < 1000)
 						{
-							enemiesSpawned++;
 							enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)], 0, 0, enemiesSpawned));
+							enemiesSpawned++;
 						}
 						else
 						{
@@ -392,8 +392,11 @@ package
 			player.velocity.y = 1 + 0.0025 * enemiesKilled;
 			
 			// Implement "win" condition
-			if(enemiesKilled == 1000)
+			if (enemiesKilled == 1000)
+			{
+				enemiesKilled = 1001;
 				winGame();
+			}
 		}
 		
 		private function resetGame():void
@@ -537,14 +540,14 @@ package
 			title.y = 20;
 			title.defaultTextFormat = new TextFormat("_typewriter", 30, 0xffffff, true);
 			title.autoSize = "center";
-			title.text = "A WINNER IS YOU";
+			title.text = "A WINNER\n IS YOU";
 			title.selectable = false;
 			addChild(title);
 			
 			// Display stats
 			var stats:TextField = new TextField;
 			stats.x = (GameState.WIDTH - stats.width) / 2;
-			stats.y = 60;
+			stats.y = 100;
 			stats.defaultTextFormat = new TextFormat("_typewriter", 15, 0xffffff, true, null, null, null, null, "center");
 			stats.autoSize = "center";
 			stats.text = "";
