@@ -153,8 +153,12 @@ package
 			for (i = 0; i < 5; i++)
 			{
 				enemiesSpawned++;
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)]));
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / (1000 / enemyShapes.length))],0,0,enemiesSpawned));
 			}
+			
+			// DEBUG
+			//enemiesSpawned = 700;
+			//enemiesKilled = 695;
 			
 			// Init player
 			player = new Actor(100, 300, shipShape, 1, 1);
@@ -293,7 +297,7 @@ package
 			if(_ticks % 480 == 0 && !gameOver && enemiesSpawned < 1000)
 			{
 				enemiesSpawned++;
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)], 0, 0, enemiesSpawned));
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / (1000 / enemyShapes.length))], 0, 0, enemiesSpawned));
 			}
 			
 			// Update bullet position
@@ -318,13 +322,13 @@ package
 						for(k = 0; k < MAX_PARTICLES; k++)
 						{	
 							particleDirection = Math.random() * 2 * Math.PI;		// Random angle in radians
-							particles.push(new Actor(enemies[j].position.x, enemies[j].position.y, particleShapes[Math.floor(enemies[j].spawnNumber / 166)], Math.cos(particleDirection) * 2, Math.sin(particleDirection) * 2));
+							particles.push(new Actor(enemies[j].position.x, enemies[j].position.y, particleShapes[Math.floor(enemies[j].spawnNumber / (1000 / enemyShapes.length))], Math.cos(particleDirection) * 2, Math.sin(particleDirection) * 2));
 						}
 						
 						// Destroy enemy, but instantly create a new one to take its place
 						if(enemiesSpawned < 1000)
 						{
-							enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)], 0, 0, enemiesSpawned));
+							enemies.splice(j, 1, new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / (1000 / enemyShapes.length))], 0, 0, enemiesSpawned));
 							enemiesSpawned++;
 						}
 						else
@@ -420,7 +424,7 @@ package
 			
 			// Spawn some new enemies
 			for(var i:int = 0; i < 5; i++)
-				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / 166)]));
+				enemies.push(new Actor(Math.random() * WIDTH, 0, enemyShapes[Math.floor(enemiesSpawned / (1000 / enemyShapes.length))]));
 			enemiesSpawned = 5;
 				
 			// Reset player
@@ -553,7 +557,7 @@ package
 			stats.text = "";
 			stats.appendText("Time Played: " + timePlayed + "s\n");
 			stats.appendText("Shots Fired: " + shotsFired + "\n");
-			stats.appendText("Enemies Killed: " + enemiesKilled + "\n");
+			stats.appendText("Enemies Killed: 1000\n");
 			stats.appendText("Accuracy: " + accuracyPercentage + "%\n");
 			stats.selectable = false;
 			addChild(stats);
@@ -561,7 +565,7 @@ package
 			// Submit stats to Kongregate
 			Game.main.kongregate.stats.submit('Time Played', timePlayed);
 			Game.main.kongregate.stats.submit('Shots Fired', shotsFired);
-			Game.main.kongregate.stats.submit('Enemies Killed', enemiesKilled);
+			Game.main.kongregate.stats.submit('Enemies Killed', 1000);
 			Game.main.kongregate.stats.submit('Accuracy', accuracyPercentage);
 			
 			// Submit time "score"
