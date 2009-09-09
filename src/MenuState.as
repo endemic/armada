@@ -129,7 +129,7 @@ package
 			addChild(scoresText);
 			
 			// Populate the "result" object for local testing purposes
-			if(!result.list)
+			if(!result.success)
 			{
 				var result:Object = new Object;
 				result.list = 
@@ -146,14 +146,17 @@ package
 					9: { 'username': 'user0', 'score': '320s' }
 				}
 			}
-
-			for(var i:int = 0; i < 10; i++)
+			
+			// Only show 10 results
+			for(var i:int = 0; i < result.list.length; i++)
 			{
 				var position:int = i + 1;
 				if(position < 10)
 					scoresText.appendText("\n " + position + ". " + result.list[i].username + ' - ' + result.list[i].score);	// Adds an extra space
-				else
+				else if(position == 10)
 					scoresText.appendText("\n" + position + ". " + result.list[i].username + ' - ' + result.list[i].score);
+				else
+					scoresText.appendText("");
 			}
 			
 			// Display button to reset to main screen

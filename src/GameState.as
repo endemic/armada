@@ -484,8 +484,8 @@ package
 			Game.main.kongregate.stats.submit('Accuracy', accuracyPercentage);
 			
 			// Submit time "score"
-			Game.main.kongregate.scores.setMode('Normal');
-			Game.main.kongregate.scores.submit(timePlayed);
+			//Game.main.kongregate.scores.setMode('Normal');
+			//Game.main.kongregate.scores.submit(timePlayed);
 			
 			// Display button to play again
 			var playButton:TextField = new TextField;
