@@ -73,14 +73,14 @@ package
 			addChild(playButton);
 			
 			// Show "story" button
-			scoresButton.x = (GameState.WIDTH - scoresButton.width) / 2;
+			/*scoresButton.x = (GameState.WIDTH - scoresButton.width) / 2;
 			scoresButton.y = 330;
 			scoresButton.defaultTextFormat = new TextFormat("_typewriter", 20, 0xffffff, true);
 			scoresButton.autoSize = "center";
 			scoresButton.text = "Best Times";
 			scoresButton.selectable = false;
 			scoresButton.visible = true;
-			addChild(scoresButton);
+			addChild(scoresButton);*/
 			
 			// Show "credits" button
 			creditsButton.x = (GameState.WIDTH - creditsButton.width) / 2;
@@ -97,9 +97,9 @@ package
 			playButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
 			// Add event listeners for "scores" button
-			scoresButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.main.kongregate.scores.requestList(showScores) });	// Request kongregate list and add "showScores" as a callback
-			scoresButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
-			scoresButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
+			//scoresButton.addEventListener(MouseEvent.MOUSE_DOWN, function(e:Event):void { Game.main.kongregate.scores.requestList(showScores) });	// Request kongregate list and add "showScores" as a callback
+			//scoresButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
+			//scoresButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
 			// Etc.
 			creditsButton.addEventListener(MouseEvent.MOUSE_DOWN, function (e:Event):void { navigateToURL(new URLRequest('http://www.bitter-gamer.com/'), '_blank') });

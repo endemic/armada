@@ -265,7 +265,7 @@ package
 			
 			// Shoot
 			if (_keys[32] && !gameOver)
-				if (shootDelay++ > 6 / player.velocity.x/* || _keys[32] == 1*/) 
+				if (shootDelay++ > 6 / player.velocity.x || _keys[32] == 1) 
 				{
 					shootDelay = 0;
 					playerShootSound.play();
