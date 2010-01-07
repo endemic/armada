@@ -87,7 +87,7 @@ package
 			creditsButton.y = 380;
 			creditsButton.defaultTextFormat = new TextFormat("_typewriter", 10, 0xffffff, true);
 			creditsButton.autoSize = "center";
-			creditsButton.text = "bitter-gamer.com";
+			creditsButton.text = "nathandemick.com";
 			creditsButton.selectable = false;
 			addChild(creditsButton);
 			
@@ -102,7 +102,7 @@ package
 			//scoresButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
 			// Etc.
-			creditsButton.addEventListener(MouseEvent.MOUSE_DOWN, function (e:Event):void { navigateToURL(new URLRequest('http://www.bitter-gamer.com/'), '_blank') });
+			creditsButton.addEventListener(MouseEvent.MOUSE_DOWN, function (e:Event):void { navigateToURL(new URLRequest('http://www.nathandemick.com/'), '_blank') });
 			creditsButton.addEventListener(MouseEvent.MOUSE_OVER, Game.main.swapCursorState);
 			creditsButton.addEventListener(MouseEvent.MOUSE_OUT, Game.main.swapCursorState);
 			
